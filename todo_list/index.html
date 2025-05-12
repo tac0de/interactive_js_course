@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="todo-app">
+    <h2>할 일 목록</h2>
+    <div class="input-section">
+      <input id="todo-input" placeholder="할 일 입력" />
+      <button id="add-btn">추가</button>
+    </div>
+    <ul id="todo-list"></ul>
+    <div class="button-group">
+      <button id="toggle-completed">완료 항목만 보기</button>
+      <button id="clear-btn">모두 초기화</button>
+    </div>
+    <p id="summary"></p>
+  </div>
+
+  <!-- 모달창 -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <p>할 일은 최대 5개까지 추가할 수 있습니다!</p>
+      <button id="close-modal">확인</button>
+    </div>
+  </div>
+
+  <script>
+    // 로컬 저장소에서 불러오기
+    let todos = JSON.parse(localStorage.getItem('todos')) || [];
+    let showCompletedOnly = false; // 완료 항목만 보기 토글 상태
+
+    // 요소 참조
+    const input = document.getElementById('todo-input');
+    const addBtn = document.getElementById('add-btn');
+    const toggleBtn = document.getElementById('toggle-completed');
+    const summary = document.getElementById('summary');
+    const modal = document.getElementById('modal');
+    const closeModalBtn = document.getElementById('close-modal');
+
+    // 할 일 추가 버튼
+    addBtn.addEventListener('click', () => {
+      const text = input.value.trim();
+      if (!text) return;
+
+      if (todos.length >= 5) {
+        showModal();
+        return;
+      }
+
+      todos.push({ text, done: false });
+      input.value = '';
+      saveAndRender();
+    });
+
+    // 완료 항목만 보기 토글
+    toggleBtn.addEventListener('click', () => {
+      showCompletedOnly = !showCompletedOnly;
+      toggleBtn.textContent = showCompletedOnly ? '전체 보기' : '완료 항목만 보기';
+      render();
+    });
+
+    // 모달 닫기 버튼
+    closeModalBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // 초기화 버튼 이벤트
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      if (confirm('정말 모든 항목을 삭제하시겠습니까?')) {
+        todos = [];
+        localStorage.removeItem('todos');
+        render();
+      }
+    });
+
+    // 모달 표시 함수
+    function showModal() {
+      modal.style.display = 'flex';
+    }
+
+    // todos 저장 후 렌더링
+    function saveAndRender() {
+      localStorage.setItem('todos', JSON.stringify(todos));
+      render();
+    }
+
+    // 목록 렌더링
+    function render() {
+      const ul = document.getElementById('todo-list');
+      ul.innerHTML = '';
+
+      const listToRender = showCompletedOnly
+        ? todos.filter(todo => todo.done)
+        : todos;
+
+      listToRender.forEach((todo, index) => {
+        const li = document.createElement('li');
+        li.textContent = todo.text;
+        li.className = 'fade-in';
+        if (todo.done) li.classList.add('done');
+
+        // 클릭 시 완료 상태 토글
+        li.addEventListener('click', () => {
+          const fullIndex = todos.indexOf(todo);
+          todos[fullIndex].done = !todos[fullIndex].done;
+          saveAndRender();
+        });
+
+        ul.appendChild(li);
+      });
+
+      // 완료된 항목 개수 계산
+      const doneCount = todos.reduce((acc, todo) => acc + (todo.done ? 1 : 0), 0);
+      summary.textContent = `${doneCount} / ${todos.length} 완료됨`;
+
+      // 콘솔 로그 출력
+      console.clear();
+      console.log('현재 할 일 목록:');
+      todos.forEach(todo => {
+        console.log(`- ${todo.text} (${todo.done ? '완료' : '미완료'})`);
+      });
+    }
+
+    render(); // 초기 렌더링
+
+
+  </script>
+</body>
+
+</html>
