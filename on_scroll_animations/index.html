@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Learn JavaScript</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <h1>Learn JavaScript</h1>
+    <p>Interactive lessons to start coding JS</p>
+  </header>
+
+  <main>
+    <section class="lesson" data-code="let name = 'John'; console.log(name);">
+      <h2>Lesson 1: Variables</h2>
+      <p>Use <code>let</code>, <code>const</code>, or <code>var</code> to declare variables.</p>
+      <pre><code>let name = "John"; console.log(name);</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+
+    <section class="lesson" data-code="function greet() { console.log('Hello!'); } greet();">
+      <h2>Lesson 2: Functions</h2>
+      <p>Functions help you reuse blocks of code.</p>
+      <pre><code>function greet() {
+  console.log("Hello!");
+}
+greet();</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+
+    <section class="lesson" data-code="const fruits = ['apple', 'banana']; console.log(fruits[0]);">
+      <h2>Lesson 3: Arrays</h2>
+      <p>Arrays store multiple values.</p>
+      <pre><code>const fruits = ["apple", "banana"];
+console.log(fruits[0]);</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+
+    <section class="lesson" data-code="const user = { name: 'Alice', age: 25 }; console.log(user.name);">
+      <h2>Lesson 4: Objects</h2>
+      <p>Objects store related data in key-value pairs.</p>
+      <pre><code>const user = { name: "Alice", age: 25 };
+console.log(user.name);</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+
+    <section class="lesson" data-code="for (let i = 0; i < 3; i++) { console.log(i); }">
+      <h2>Lesson 5: Loops</h2>
+      <p>Loops repeat code multiple times.</p>
+      <pre><code>for (let i = 0; i < 3; i++) {
+  console.log(i);
+}</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+
+    <section class="lesson" data-code="const isAdult = age => age >= 18; console.log(isAdult(20));">
+      <h2>Lesson 6: Arrow Functions</h2>
+      <p>Arrow functions offer a shorter syntax for writing functions.</p>
+      <pre><code>const isAdult = age => age >= 18;
+console.log(isAdult(20));</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+
+    <section class="lesson" data-code="try { throw new Error('Oops'); } catch(e) { console.error(e.message); }">
+      <h2>Lesson 7: Error Handling</h2>
+      <p>Use try-catch to handle errors gracefully.</p>
+      <pre><code>try {
+  throw new Error("Oops");
+} catch(e) {
+  console.error(e.message);
+}</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+
+    <section class="lesson" data-code="let set = new Set([1, 2, 3]); console.log(set.has(2));">
+      <h2>Lesson 8: Sets</h2>
+      <p>Sets store unique values.</p>
+      <pre><code>let set = new Set([1, 2, 3]);
+console.log(set.has(2));</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+
+    <section class="lesson" data-code="const sayHi = name => `Hi, ${name}`; console.log(sayHi('Lee')); ">
+      <h2>Lesson 9: Template Literals</h2>
+      <p>Template literals allow embedded expressions.</p>
+      <pre><code>const sayHi = name => `Hi, ${name}`;
+console.log(sayHi("Lee"));</code></pre>
+      <button class="run-btn">Run Code</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Learn JavaScript</p>
+  </footer>
+
+  <!-- <script type="module" src="scrollGlitch.js"></script> -->
+
+  <script>
+    // // 글리치 처럼 보이는 이펙트 수정 전.
+    // document.addEventListener("DOMContentLoaded", () => {
+    //   const observer = new IntersectionObserver((entries) => {
+    //     entries.forEach(entry => {
+    //       if (entry.isIntersecting) {
+    //         entry.target.classList.add("visible");
+    //       } else {
+    //         entry.target.classList.remove("visible");
+    //       }
+    //     });
+    //   }, { threshold: 0.3 });
+
+    //   document.querySelectorAll(".lesson").forEach(section => {
+    //     observer.observe(section);
+    //   });
+
+    //   document.querySelectorAll(".run-btn").forEach(button => {
+    //     button.addEventListener("click", () => {
+    //       const code = button.closest(".lesson").dataset.code;
+    //       try {
+    //         new Function(code)();
+    //       } catch (err) {
+    //         alert("Error: " + err.message);
+    //       }
+    //     });
+    //   });
+    // });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const target = entry.target;
+          if (entry.intersectionRatio > 0.4 && !target.classList.contains("visible")) {
+            target.classList.add("visible");
+          } else if (entry.intersectionRatio <= 0.1 && target.classList.contains("visible")) {
+            target.classList.remove("visible");
+          }
+        });
+      }, {
+        threshold: Array.from({ length: 101 }, (_, i) => i / 100)
+      });
+
+      document.querySelectorAll(".lesson").forEach(section => {
+        observer.observe(section);
+      });
+
+      document.querySelectorAll(".run-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const code = button.closest(".lesson").dataset.code;
+          try {
+            new Function(code)();
+          } catch (err) {
+            alert("Error: " + err.message);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

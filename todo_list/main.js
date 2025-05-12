@@ -37,6 +37,12 @@ function render(list = todos) {
       saveAndRender();
     });
 
+    // li.addEventListener('click', () => {
+    //   const fullIndex = todos.indexOf(todo);  0, 1, 2, 3;
+    //   todos[fullIndex].done = !todos[fullIndex].done;
+    //   saveAndRender();
+    // });
+
     ul.appendChild(li);
   });
 

@@ -15,7 +15,9 @@
       <input id="todo-input" placeholder="할 일 입력" />
       <button id="add-btn">추가</button>
     </div>
-    <ul id="todo-list"></ul>
+    <ul id="todo-list">
+
+    </ul>
     <div class="button-group">
       <button id="toggle-completed">완료 항목만 보기</button>
       <button id="clear-btn">모두 초기화</button>
@@ -54,6 +56,8 @@
         return;
       }
 
+
+      // 배열에 텍스트 추가
       todos.push({ text, done: false });
       input.value = '';
       saveAndRender();
@@ -100,7 +104,7 @@
         ? todos.filter(todo => todo.done)
         : todos;
 
-      listToRender.forEach((todo, index) => {
+      listToRender.forEach(todo => {
         const li = document.createElement('li');
         li.textContent = todo.text;
         li.className = 'fade-in';
@@ -129,7 +133,6 @@
     }
 
     render(); // 초기 렌더링
-
 
   </script>
 </body>
