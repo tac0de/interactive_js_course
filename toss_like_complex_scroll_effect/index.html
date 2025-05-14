@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Scroll Synced Video</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      height: 5000px;
+    }
+
+    .video-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    video {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      z-index: 10;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="video-container">
+    <video id="scrollVideo" preload="auto" muted>
+      <source src="https://static.toss.im/homepage-static/newtoss/intro-video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="overlay">New Dimension Begins</div>
+
+  <script>
+    const video = document.getElementById('scrollVideo');
+
+    video.addEventListener('loadedmetadata', () => {
+      const duration = video.duration;
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const maxScroll = document.body.scrollHeight - window.innerHeight;
+
+        const scrollFraction = scrollTop / maxScroll;
+        const newTime = scrollFraction * duration;
+
+        video.currentTime = newTime;
+      });
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,5 +1,6 @@
-let todos = JSON.parse(localStorage.getItem('todos')) || [];
+// BEFORE
 
+let todos = JSON.parse(localStorage.getItem('todos')) || [];
 
 document.getElementById('add-btn').addEventListener('click', () => {
   const input = document.getElementById('todo-input');

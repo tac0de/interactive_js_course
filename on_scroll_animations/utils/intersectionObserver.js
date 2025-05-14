@@ -15,7 +15,6 @@ export function initIntersectionObserver({
           target.classList.remove("visible");
         }
       } else {
-        // 기존 코드 1: intersectionRatio 값으로 visible 처리
         if (entry.intersectionRatio > intersectionRatioThreshold && !target.classList.contains("visible")) {
           target.classList.add("visible");
         } else if (entry.intersectionRatio <= 0.1 && target.classList.contains("visible")) {

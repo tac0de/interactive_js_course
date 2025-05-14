@@ -1,6 +1,5 @@
-// afterRefactor.js (수정 후 코드)
-import { initIntersectionObserver } from './utils/intersectionObserver.js;
-import { initRunButton } from './utils/runButton.js;
+import { initIntersectionObserver } from './utils/intersectionObserver.js';
+import { initRunButton } from './utils/runButton.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   initIntersectionObserver({

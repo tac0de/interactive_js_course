@@ -98,10 +98,10 @@ console.log(sayHi("Lee"));</code></pre>
     <p>&copy; 2025 Learn JavaScript</p>
   </footer>
 
-  <!-- <script type="module" src="scrollGlitch.js"></script> -->
+  <script type="module" src="scrollFixGlitch.js"></script>
 
   <script>
-    // // 글리치 처럼 보이는 이펙트 수정 전.
+    // 글리치 처럼 보이는 이펙트 수정 전.
     // document.addEventListener("DOMContentLoaded", () => {
     //   const observer = new IntersectionObserver((entries) => {
     //     entries.forEach(entry => {
@@ -129,35 +129,37 @@ console.log(sayHi("Lee"));</code></pre>
     //   });
     // });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          const target = entry.target;
-          if (entry.intersectionRatio > 0.4 && !target.classList.contains("visible")) {
-            target.classList.add("visible");
-          } else if (entry.intersectionRatio <= 0.1 && target.classList.contains("visible")) {
-            target.classList.remove("visible");
-          }
-        });
-      }, {
-        threshold: Array.from({ length: 101 }, (_, i) => i / 100)
-      });
+    // document.addEventListener("DOMContentLoaded", () => {
+    //   const observer = new IntersectionObserver((entries) => {
+    //     entries.forEach(entry => {
+    //       const target = entry.target;
+    //       if (entry.intersectionRatio > 0.15 && !target.classList.contains("visible")) {
+    //         console.log('onvisible', entry.intersectionRatio);
+    //         target.classList.add("visible");
+    //       } else if (entry.intersectionRatio <= 0.1 && target.classList.contains("visible")) {
+    //         console.log('on invisible', entry.intersectionRatio);
+    //         target.classList.remove("visible");
+    //       }
+    //     });
+    //   }, {
+    //     threshold: Array.from({ length: 101 }, (_, i) => i / 100)
+    //   });
 
-      document.querySelectorAll(".lesson").forEach(section => {
-        observer.observe(section);
-      });
+    //   document.querySelectorAll(".lesson").forEach(section => {
+    //     observer.observe(section);
+    //   });
 
-      document.querySelectorAll(".run-btn").forEach(button => {
-        button.addEventListener("click", () => {
-          const code = button.closest(".lesson").dataset.code;
-          try {
-            new Function(code)();
-          } catch (err) {
-            alert("Error: " + err.message);
-          }
-        });
-      });
-    });
+    //   document.querySelectorAll(".run-btn").forEach(button => {
+    //     button.addEventListener("click", () => {
+    //       const code = button.closest(".lesson").dataset.code;
+    //       try {
+    //         new Function(code)();
+    //       } catch (err) {
+    //         alert("Error: " + err.message);
+    //       }
+    //     });
+    //   });
+    // });
   </script>
 </body>
 
