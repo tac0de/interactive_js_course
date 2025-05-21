@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Toss Branding (Optimized Scroll)</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: sans-serif;
+      background: black;
+      color: white;
+    }
+
+    .video-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    video {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .overlay {
+      top: 0;
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-weight: bolder;
+      line-height: 1.2;
+      pointer-events: none;
+    }
+
+    .text-item {
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      font-size: 5.5vw;
+      text-align: center;
+      transition: opacity 0.3s ease-out;
+      will-change: transform, opacity;
+    }
+
+    .text-item[data-index="0"] {
+      top: 50vh;
+      opacity: 1;
+      font-size: 6vw;
+    }
+
+    .text-item[data-index="2"] {
+      left: calc(12.5vw - 16px);
+    }
+
+    .text-item[data-index="3"] {
+      left: calc(25vw - 32px);
+    }
+
+    #scrollArea {
+      width: 100%;
+    }
+
+    .next-section {
+      height: 0;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="video-container" id="videoContainer">
+    <video id="scrollVideo" preload="auto" muted>
+      <source src="https://static.toss.im/homepage-static/newtoss/intro-video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <div class="overlay">
+      <div class="text-item" data-index="0">완전히 차원이 다른<br>토스의 새로운 얼굴</div>
+      <div class="text-item" data-index="1">자유롭게,</div>
+      <div class="text-item" data-index="2">유연하게,</div>
+      <div class="text-item" data-index="3">대담하게.</div>
+    </div>
+  </div>
+
+  <div id="scrollArea"></div>
+
+  <section class="next-section">
+    <p>다음 섹션에 오신 것을 환영합니다.</p>
+  </section>
+
+  <script>
+    const video = document.getElementById('scrollVideo');
+    const videoContainer = document.getElementById('videoContainer');
+    const scrollArea = document.getElementById('scrollArea');
+    const texts = [
+      document.querySelector('.text-item[data-index="0"]'),
+      document.querySelector('.text-item[data-index="1"]'),
+      document.querySelector('.text-item[data-index="2"]'),
+      document.querySelector('.text-item[data-index="3"]'),
+    ];
+
+    let lastScrollY = 0;
+    let ticking = false;
+
+    video.addEventListener('loadedmetadata', () => {
+      const duration = video.duration;
+      const pixelsPerSecond = 1000;
+      const totalScrollHeight = duration * pixelsPerSecond;
+
+      scrollArea.style.height = `${totalScrollHeight}px`;
+
+      function update() {
+        const scrollTop = window.scrollY;
+        const maxScroll = totalScrollHeight - window.innerHeight;
+        const scrollFraction = Math.min(scrollTop / maxScroll, 1);
+
+        const currentTime = scrollFraction * duration;
+        video.currentTime = currentTime;
+
+
+        // text0: fade in/out
+        const fade0Start = 0.0, fade0End = 0.2;
+        const fade0Progress = normalize(scrollFraction, fade0Start, fade0End);
+        texts[0].style.opacity = 1 - fade0Progress; // 정확한 1 → 0 페이드
+
+        const originYvh = 50; // 우리가 시각적으로 도달하길 원하는 위치
+        const startYvh = 60; // 아래에서 시작
+        const lineGap = 10;
+
+        // text1
+        const y1 = interpolate(normalize(scrollFraction, 0.2, 0.3), startYvh, originYvh);
+        const x1 = interpolate(normalize(scrollFraction, 0.3, 0.4), 0, - lineGap);
+        if (scrollFraction >= 0.2) {
+          texts[1].style.opacity = 1;
+          texts[1].style.transform = `translate(${x1}vw, ${y1}vh)`; // 위에서 아래로 올라옴
+        } else {
+          texts[1].style.opacity = 0;
+        }
+
+        // text2
+        const y2 = interpolate(normalize(scrollFraction, 0.4, 0.5), startYvh, originYvh);
+        const x2 = interpolate(normalize(scrollFraction, 0.5, 0.6), 0, - lineGap);
+        const x1_shift2 = interpolate(normalize(scrollFraction, 0.4, 0.5), 0, - lineGap);
+        const newX1 = x1 + x1_shift2;
+        if (scrollFraction >= 0.4) {
+          texts[1].style.transform = `translate(${newX1}vw, ${y1}vh)`;
+          texts[2].style.opacity = 1;
+          texts[2].style.transform = `translate(${x2}vw, ${y2}vh)`;
+        } else {
+          texts[2].style.opacity = 0;
+        }
+
+        // text3
+        const y3 = interpolate(normalize(scrollFraction, 0.6, 0.7), startYvh, originYvh);
+        if (scrollFraction >= 0.6) {
+          texts[3].style.opacity = 1;
+          texts[3].style.transform = `translate(0, ${y3}vh)`;
+        } else {
+          texts[3].style.opacity = 0;
+        }
+
+        // 비디오 영역 숨김 처리
+        videoContainer.style.height = currentTime >= duration ? '0px' : '100vh';
+
+        ticking = false;
+      }
+
+      // 보조 함수들
+      function normalize(value, min, max) {
+        return Math.min(Math.max((value - min) / (max - min), 0), 1);
+      }
+
+      function interpolate(t, start, end) {
+        return start + (end - start) * t;
+      }
+
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+
+        if (!ticking && Math.abs(scrollY - lastScrollY) > 1) {
+          ticking = true;
+          requestAnimationFrame(update);
+          lastScrollY = scrollY;
+
+          document.querySelector('.next-section').style.height = '100vh';
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>
