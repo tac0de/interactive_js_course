@@ -4,79 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Toss Branding (Optimized Scroll)</title>
-  <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      font-family: sans-serif;
-      background: black;
-      color: white;
-    }
-
-    .video-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-    }
-
-    video {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-    }
-
-    .overlay {
-      top: 0;
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      font-weight: bolder;
-      line-height: 1.2;
-      pointer-events: none;
-    }
-
-    .text-item {
-      position: absolute;
-      width: 100%;
-      opacity: 0;
-      font-size: 5.5vw;
-      text-align: center;
-      transition: opacity 0.3s ease-out;
-      will-change: transform, opacity;
-    }
-
-    .text-item[data-index="0"] {
-      top: 50vh;
-      opacity: 1;
-      font-size: 6vw;
-    }
-
-    .text-item[data-index="2"] {
-      left: calc(12.5vw - 16px);
-    }
-
-    .text-item[data-index="3"] {
-      left: calc(25vw - 32px);
-    }
-
-    #scrollArea {
-      width: 100%;
-    }
-
-    .next-section {
-      height: 0;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -97,9 +25,6 @@
 
   <div id="scrollArea"></div>
 
-  <section class="next-section">
-    <p>다음 섹션에 오신 것을 환영합니다.</p>
-  </section>
 
   <script>
     const video = document.getElementById('scrollVideo');
@@ -153,8 +78,8 @@
         // text2
         const y2 = interpolate(normalize(scrollFraction, 0.4, 0.5), startYvh, originYvh);
         const x2 = interpolate(normalize(scrollFraction, 0.5, 0.6), 0, - lineGap);
-        const x1_shift2 = interpolate(normalize(scrollFraction, 0.4, 0.5), 0, - lineGap);
-        const newX1 = x1 + x1_shift2;
+        const x1_shift1 = interpolate(normalize(scrollFraction, 0.4, 0.5), 0, - lineGap);
+        const newX1 = x1 + x1_shift1;
         if (scrollFraction >= 0.4) {
           texts[1].style.transform = `translate(${newX1}vw, ${y1}vh)`;
           texts[2].style.opacity = 1;
@@ -165,10 +90,27 @@
 
         // text3
         const y3 = interpolate(normalize(scrollFraction, 0.6, 0.7), startYvh, originYvh);
+
+
         if (scrollFraction >= 0.6) {
           texts[3].style.opacity = 1;
           texts[3].style.transform = `translate(0, ${y3}vh)`;
         } else {
+          texts[3].style.opacity = 0;
+        }
+
+        // text1, text2, text3
+
+        const newY = interpolate(normalize(scrollFraction, 0.8, 0.9), originYvh, originYvh - 5);
+
+        if (scrollFraction >= 0.8) {
+          texts[1].style.transform = `translate(${newX1}vw, ${newY}vh)`;
+          texts[2].style.transform = `translate(${x2}vw, ${newY}vh)`;
+          texts[3].style.transform = `translate(0, ${newY}vh)`;
+        }
+        if (scrollFraction >= 0.85) {
+          texts[1].style.opacity = 0;
+          texts[2].style.opacity = 0;
           texts[3].style.opacity = 0;
         }
 
@@ -194,8 +136,6 @@
           ticking = true;
           requestAnimationFrame(update);
           lastScrollY = scrollY;
-
-          document.querySelector('.next-section').style.height = '100vh';
         }
       });
     });
